@@ -22,9 +22,12 @@
 
 char board[ROWS * COLS];
 int snake_coord[2 * MAX_SNAKE_LEN] = {3,3,3,2,3,1};
+
+// STATES
 int length = 3;
 int score = 0;
 int turn = 0;
+char head_symbol = RIGHT_SYMBOL; //start the game with the snake facing right
 
 void clear_board() {
     for (int i = 0; i < ROWS * COLS; i++) {
@@ -37,16 +40,40 @@ int idx(int row, int col) {
     return row * COLS + col;
 }
 
+char direction_symbol(int r, int c){
+    if (r == -1 && c == 0){
+        return UP_SYMBOL;
+    } else if (r == 1 && c ==0){
+        return DOWN_SYMBOL;
+    } else if (r == 0 && c == -1){
+        return LEFT_SYMBOL;
+    } else{
+        return RIGHT_SYMBOL;
+    }
+}
+
 void insert_snake() {
-    char dir = RIGHT_SYMBOL;
     for (int i = 0; i < length * 2; i += 2) {
         if (i == 0) {
-            board[idx(snake_coord[0], snake_coord[1])] = dir;
+            board[idx(snake_coord[0], snake_coord[1])] = head_symbol;
         } else {
             board[idx(snake_coord[i], snake_coord[i+1])] = BODY_SYMBOL;
         }
 
     }
+}
+
+void insert_food(int food_r, int food_c) {
+    // inserts food at r, c (pano ba randomization sa risc-v?)
+    if (food_r >= 0 && food_c >= 0 && food_r < ROWS && food_c < COLS){
+        board[idx(food_r, food_c)] = FOOD_SYMBOL;
+    }
+}
+
+void spawn_food(){
+    // TODO 
+    // call insert food after eating the current food
+    // Figure out how to find a cell to spawn the food
 }
 
 void slither(int dir_r, int dir_c) {
@@ -56,7 +83,42 @@ void slither(int dir_r, int dir_c) {
     }
     snake_coord[0] += dir_r;
     snake_coord[1] += dir_c;
+
+    head_symbol = direction_symbol(dir_r, dir_c);
+
+    // add logic for collision (body or food)
+
+    //
+
+    if (food_eaten){
+        score++;
+        // grow the snake
+
+        //
+        spawn_food();
+    }
+
+    turn++;
 }
+
+// function for collision? not sure if tama logic double check later.
+void hit_border(){
+    if (snake_coord[0] < 0 || snake_coord[0] > ROWS || snake_coord[1] < 0 || snake_coord[1] > COLS){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void hit_body(){
+    for (int l = 1; l < length; l++){
+        if (snake_coord[0] == snake_coord[l * 2] && snake_coord[1] == snake_coord[l * 2 + 1]){
+            return true;
+        }
+    }
+    return false;
+}
+//
 
 void draw_horiz_border() {
     printf("%c",'+');
@@ -125,6 +187,15 @@ char read_move() {
 
 void new_game_setup() {
     clear_board();
+    length = 3;
+    score = 0;
+    turn = 0
+
+    // Going left
+    initial_direction_r = 0;
+    initial_direction_c = 1;
+    //
+
     // TODO
     // place snake [(3,3),(3,2),(3,1)]
     // use 1 array for new game and state setup?
