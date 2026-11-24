@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include <stdbool.h>
 // SNAKE GAME RISC V TEMPLATE?
 // no game logic yet
 // can print blank state
@@ -71,7 +71,7 @@ void insert_food(int food_r, int food_c) {
 }
 
 void spawn_food(){
-    // TODO 
+    // TODO
     // call insert food after eating the current food
     // Figure out how to find a cell to spawn the food
 }
@@ -88,7 +88,7 @@ void slither(int dir_r, int dir_c) {
 
     // add logic for collision (body or food)
 
-    //
+    bool food_eaten = false; // check if new head coord == food coord
 
     if (food_eaten){
         score++;
@@ -102,7 +102,7 @@ void slither(int dir_r, int dir_c) {
 }
 
 // function for collision? not sure if tama logic double check later.
-void hit_border(){
+bool hit_border(){
     if (snake_coord[0] < 0 || snake_coord[0] > ROWS || snake_coord[1] < 0 || snake_coord[1] > COLS){
         return true;
     } else {
@@ -110,7 +110,7 @@ void hit_border(){
     }
 }
 
-void hit_body(){
+bool hit_body(){
     for (int l = 1; l < length; l++){
         if (snake_coord[0] == snake_coord[l * 2] && snake_coord[1] == snake_coord[l * 2 + 1]){
             return true;
@@ -189,11 +189,11 @@ void new_game_setup() {
     clear_board();
     length = 3;
     score = 0;
-    turn = 0
+    turn = 0;
 
     // Going left
-    initial_direction_r = 0;
-    initial_direction_c = 1;
+    int initial_direction_r = 0;
+    int initial_direction_c = 1;
     //
 
     // TODO
