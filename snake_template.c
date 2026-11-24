@@ -1,17 +1,19 @@
 #include <stdio.h>
 #include <stdbool.h>
+
 // SNAKE GAME RISC V TEMPLATE?
-// no game logic yet
+// unfinished game logic
 // can print blank state
 // board is an array of 64 chars
 // cell (r,c) is at index r * 8 + c
 // length, score, turn are globals
 // snake coords in an array of 16 ints
-//
+
 
 #define ROWS 8
 #define COLS 8
 #define MAX_SNAKE_LEN 8
+#define INIT_SNAKE_LEN 3
 #define EMPTY_SYMBOL '.'
 #define FOOD_SYMBOL  '*'
 #define BODY_SYMBOL  'O'
@@ -22,9 +24,10 @@
 
 char board[ROWS * COLS];
 int snake_coord[2 * MAX_SNAKE_LEN] = {3,3,3,2,3,1};
+int food_coord[2 * MAX_SNAKE_LEN - INIT_SNAKE_LEN] = {0,0,0,0,0,0,0,0,0,0,0,0,0};
 
-// STATES
-int length = 3;
+// GLOBAL STATES
+int length = INIT_SNAKE_LEN;
 int score = 0;
 int turn = 0;
 char head_symbol = RIGHT_SYMBOL; //start the game with the snake facing right
@@ -41,6 +44,7 @@ int idx(int row, int col) {
 }
 
 char direction_symbol(int r, int c){
+    // gives head direction to use based on current direction
     if (r == -1 && c == 0){
         return UP_SYMBOL;
     } else if (r == 1 && c ==0){
@@ -53,13 +57,14 @@ char direction_symbol(int r, int c){
 }
 
 void insert_snake() {
+    // writes the snake body and head onto the board
+    // assumes board is cleared
     for (int i = 0; i < length * 2; i += 2) {
         if (i == 0) {
             board[idx(snake_coord[0], snake_coord[1])] = head_symbol;
         } else {
             board[idx(snake_coord[i], snake_coord[i+1])] = BODY_SYMBOL;
         }
-
     }
 }
 
