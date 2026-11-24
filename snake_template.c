@@ -33,6 +33,7 @@ int turn = 0;
 char head_symbol = RIGHT_SYMBOL; //start the game with the snake facing right
 
 void clear_board() {
+    // writes empty board state
     for (int i = 0; i < ROWS * COLS; i++) {
         board[i] = EMPTY_SYMBOL;
     }
@@ -43,13 +44,13 @@ int idx(int row, int col) {
     return row * COLS + col;
 }
 
-char direction_symbol(int r, int c){
+char direction_symbol(int dir_r, int dir_c){
     // gives head direction to use based on current direction
-    if (r == -1 && c == 0){
+    if (dir_r == -1 && dir_c == 0){
         return UP_SYMBOL;
-    } else if (r == 1 && c ==0){
+    } else if (dir_r == 1 && dir_c ==0){
         return DOWN_SYMBOL;
-    } else if (r == 0 && c == -1){
+    } else if (dir_r == 0 && dir_c == -1){
         return LEFT_SYMBOL;
     } else{
         return RIGHT_SYMBOL;
@@ -82,16 +83,17 @@ void spawn_food(){
 }
 
 void slither(int dir_r, int dir_c) {
+    // TODO: add logic for collision (body or food)
+
+    // shifts every succeeding body segment
     for (int i = 2 * length - 2; i > 0; i -= 2) {
         snake_coord[i] = snake_coord[i - 2];
         snake_coord[i + 1] = snake_coord[i - 1];
     }
+    // moves head in specified dir
     snake_coord[0] += dir_r;
     snake_coord[1] += dir_c;
-
     head_symbol = direction_symbol(dir_r, dir_c);
-
-    // add logic for collision (body or food)
 
     bool food_eaten = false; // check if new head coord == food coord
 
